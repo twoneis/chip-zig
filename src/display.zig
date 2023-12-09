@@ -88,9 +88,9 @@ pub const Display = struct {
         while (y < @as(u16, self.win_height) * @as(u16, self.scale_factor)) : (y += 1) {
             var x: u16 = 0;
             while (x < @as(u16, self.win_width) * @as(u16, self.scale_factor)) : (x += 1) {
-                const idx: usize = @as(usize, x) + @as(usize, y) * @as(usize, self.win_width);
-                const shift_x = @as(u8, @intCast(@divFloor(x, @as(u16, self.scale_factor))));
-                const shift_y = @as(u8, @intCast(@divFloor(y, @as(u16, self.scale_factor))));
+                const idx: usize = @as(usize, x) + @as(usize, y) * @as(usize, self.win_width) * @as(usize, self.scale_factor);
+                const shift_x = @as(u8, @intCast(x / @as(u16, self.scale_factor)));
+                const shift_y = @as(u8, @intCast(y / @as(u16, self.scale_factor)));
                 var color = if (bitmap.getPixel(shift_x, shift_y) == 1) col else no_col;
                 var r: u32 = @as(u32, color.r) << 24;
                 var g: u32 = @as(u32, color.g) << 16;
