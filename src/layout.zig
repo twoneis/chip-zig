@@ -1,0 +1,11 @@
+// zig fmt: off
+const c = @cImport({
+    @cInclude("SDL2/SDL.h");
+});
+
+pub const KEYS = [_]c_int{
+    c.SDL_SCANCODE_1, c.SDL_SCANCODE_2, c.SDL_SCANCODE_3, c.SDL_SCANCODE_4,
+    c.SDL_SCANCODE_Q, c.SDL_SCANCODE_W, c.SDL_SCANCODE_E, c.SDL_SCANCODE_R,
+    c.SDL_SCANCODE_A, c.SDL_SCANCODE_S, c.SDL_SCANCODE_D, c.SDL_SCANCODE_F,
+    c.SDL_SCANCODE_Z, c.SDL_SCANCODE_X, c.SDL_SCANCODE_C, c.SDL_SCANCODE_V
+};

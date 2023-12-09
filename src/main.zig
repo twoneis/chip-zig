@@ -16,9 +16,12 @@ pub fn main() !void {
         return;
     };
 
-    var emulator = Emulator.init(allocator);
+    var emulator = try Emulator.init(allocator);
     defer emulator.deinit();
-    emulator.loadROM(rom_path);
+    if (!emulator.loadROM(rom_path)) {
+        std.debug.print("Could not load {s}\n", .{rom_path});
+        return;
+    }
 
     var display = try Display.init();
     defer display.deinit();

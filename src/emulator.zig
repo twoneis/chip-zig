@@ -27,7 +27,7 @@ pub const Emulator = struct {
 
     pub fn init(allocator: std.mem.Allocator) !Self {
         var memory = try allocator.alloc(u8, 4096);
-        @memcpy(memory, FONT[0..80]);
+        @memcpy(memory[0..80], FONT[0..80]);
         return .{ .allocator = allocator, .memory = memory };
     }
 
@@ -35,11 +35,7 @@ pub const Emulator = struct {
         self.allocator.free(self.memory);
     }
 
-    fn loadToMemory(self: *Self, program: []u8) void {
-        @memcpy(self.memory[0x200..], program);
-    }
-
-    pub fn loadROM(self: *Self, path: []u8) bool {
+    pub fn loadROM(self: *Self, path: []const u8) bool {
         const file = std.fs.cwd().openFile(path, .{}) catch return false;
         defer file.close();
 
@@ -51,7 +47,7 @@ pub const Emulator = struct {
 
         file.reader().readNoEof(buf) catch return false;
 
-        self.loadToMemory(buf);
+        @memcpy(self.memory[0x200 .. 0x200 + buf.len], buf);
 
         return true;
     }

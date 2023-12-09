@@ -3,6 +3,7 @@ const c = @cImport({
     @cInclude("SDL2/SDL.h");
 });
 const Bitmap = @import("bitmap.zig").Bitmap;
+const LAYOUT = @import("layout.zig").KEYS;
 
 pub const Display = struct {
     const Self = @This();
@@ -13,9 +14,10 @@ pub const Display = struct {
     win_height: u8 = 64,
     scale_factor: u8 = 10,
     open: bool,
+    keys: [16]bool,
 
     pub fn init() !Self {
-        var this: Self = .{ .screen = undefined, .renderer = undefined, .framebuffer = undefined, .open = true };
+        var this: Self = .{ .screen = undefined, .renderer = undefined, .framebuffer = undefined, .open = true, .keys = std.mem.zeros([16]bool) };
 
         // Initialize SDL
         if (c.SDL_Init(c.SDL_INIT_VIDEO | c.SDL_INIT_AUDIO) != 0) {
@@ -54,6 +56,112 @@ pub const Display = struct {
         while (c.SDL_PollEvent(&event) != 0) {
             switch (event.type) {
                 c.SDL_QUIT => self.open = false,
+                c.SDL_KEYDOWN => {
+                    switch (event.key.keysym.scancode) {
+                        LAYOUT[0] => {
+                            self.keys[0x1] = true;
+                        },
+                        LAYOUT[1] => {
+                            self.keys[0x2] = true;
+                        },
+                        LAYOUT[2] => {
+                            self.keys[0x3] = true;
+                        },
+                        LAYOUT[3] => {
+                            self.keys[0xC] = true;
+                        },
+                        LAYOUT[4] => {
+                            self.keys[0x4] = true;
+                        },
+                        LAYOUT[5] => {
+                            self.keys[0x5] = true;
+                        },
+                        LAYOUT[6] => {
+                            self.keys[0x6] = true;
+                        },
+                        LAYOUT[7] => {
+                            self.keys[0xD] = true;
+                        },
+                        LAYOUT[8] => {
+                            self.keys[0x7] = true;
+                        },
+                        LAYOUT[9] => {
+                            self.keys[0x8] = true;
+                        },
+                        LAYOUT[10] => {
+                            self.keys[0x9] = true;
+                        },
+                        LAYOUT[11] => {
+                            self.keys[0xE] = true;
+                        },
+                        LAYOUT[12] => {
+                            self.keys[0xA] = true;
+                        },
+                        LAYOUT[13] => {
+                            self.keys[0x0] = true;
+                        },
+                        LAYOUT[14] => {
+                            self.keys[0xB] = true;
+                        },
+                        LAYOUT[15] => {
+                            self.keys[0xF] = true;
+                        },
+                        else => {},
+                    }
+                },
+                c.SDL_KEYUP => {
+                    switch (event.key.keysym.scancode) {
+                        LAYOUT[0] => {
+                            self.keys[0x1] = false;
+                        },
+                        LAYOUT[1] => {
+                            self.keys[0x2] = false;
+                        },
+                        LAYOUT[2] => {
+                            self.keys[0x3] = false;
+                        },
+                        LAYOUT[3] => {
+                            self.keys[0xC] = false;
+                        },
+                        LAYOUT[4] => {
+                            self.keys[0x4] = false;
+                        },
+                        LAYOUT[5] => {
+                            self.keys[0x5] = false;
+                        },
+                        LAYOUT[6] => {
+                            self.keys[0x6] = false;
+                        },
+                        LAYOUT[7] => {
+                            self.keys[0xD] = false;
+                        },
+                        LAYOUT[8] => {
+                            self.keys[0x7] = false;
+                        },
+                        LAYOUT[9] => {
+                            self.keys[0x8] = false;
+                        },
+                        LAYOUT[10] => {
+                            self.keys[0x9] = false;
+                        },
+                        LAYOUT[11] => {
+                            self.keys[0xE] = false;
+                        },
+                        LAYOUT[12] => {
+                            self.keys[0xA] = false;
+                        },
+                        LAYOUT[13] => {
+                            self.keys[0x0] = false;
+                        },
+                        LAYOUT[14] => {
+                            self.keys[0xB] = false;
+                        },
+                        LAYOUT[15] => {
+                            self.keys[0xF] = false;
+                        },
+                        else => {},
+                    }
+                },
                 else => {},
             }
         }
