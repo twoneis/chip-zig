@@ -1,24 +1,22 @@
 const std = @import("std");
+const Display = @import("display.zig").Display;
+const Bitmap = @import("bitmap.zig").Bitmap;
+
+var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+const allocator = gpa.allocator();
 
 pub fn main() !void {
-    // Prints to stderr (it's a shortcut based on `std.io.getStdErr()`)
-    std.debug.print("All your {s} are belong to us.\n", .{"codebase"});
+    defer if (gpa.deinit() == .leak) @panic("Memory leaked");
 
-    // stdout is for the actual output of your application, for example if you
-    // are implementing gzip, then only the compressed bytes should be sent to
-    // stdout, not any debugging messages.
-    const stdout_file = std.io.getStdOut().writer();
-    var bw = std.io.bufferedWriter(stdout_file);
-    const stdout = bw.writer();
+    var display = try Display.init();
+    defer display.deinit();
 
-    try stdout.print("Run `zig build test` to run the tests.\n", .{});
+    var bitmap = try Bitmap.init(allocator, display.win_width, display.win_height);
+    defer bitmap.free();
+    _ = bitmap.setPixel(5, 5);
 
-    try bw.flush(); // don't forget to flush!
-}
-
-test "simple test" {
-    var list = std.ArrayList(i32).init(std.testing.allocator);
-    defer list.deinit(); // try commenting this out and see if zig detects the memory leak!
-    try list.append(42);
-    try std.testing.expectEqual(@as(i32, 42), list.pop());
+    while (display.open) {
+        display.input();
+        display.draw(&bitmap);
+    }
 }
