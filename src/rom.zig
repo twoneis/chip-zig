@@ -19,7 +19,7 @@ const FONT = [80]u8{
     0xF0, 0x80, 0xF0, 0x80, 0x80, // F
 };
 
-pub const Emulator = struct {
+pub const ROM = struct {
     const Self = @This();
 
     allocator: std.mem.Allocator,

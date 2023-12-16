@@ -1,7 +1,7 @@
 const std = @import("std");
-const Display = @import("display.zig").Display;
+const IO = @import("io.zig").IO;
 const Bitmap = @import("bitmap.zig").Bitmap;
-const Emulator = @import("emulator.zig").Emulator;
+const ROM = @import("rom.zig").ROM;
 
 var gpa = std.heap.GeneralPurposeAllocator(.{}){};
 const allocator = gpa.allocator();
@@ -16,22 +16,22 @@ pub fn main() !void {
         return;
     };
 
-    var emulator = try Emulator.init(allocator);
-    defer emulator.deinit();
-    if (!emulator.loadROM(rom_path)) {
+    var rom = try ROM.init(allocator);
+    defer rom.deinit();
+    if (!rom.loadROM(rom_path)) {
         std.debug.print("Could not load {s}\n", .{rom_path});
         return;
     }
 
-    var display = try Display.init();
-    defer display.deinit();
+    var io = try IO.init();
+    defer io.deinit();
 
-    var bitmap = try Bitmap.init(allocator, display.win_width, display.win_height);
+    var bitmap = try Bitmap.init(allocator, io.win_width, io.win_height);
     defer bitmap.free();
     _ = bitmap.setPixel(5, 5);
 
-    while (display.open) {
-        display.input();
-        display.draw(&bitmap);
+    while (io.open) {
+        io.input();
+        io.draw(&bitmap);
     }
 }

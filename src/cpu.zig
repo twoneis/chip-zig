@@ -1,13 +1,13 @@
 const std = @import("std");
 const Bitmap = @import("bitmap.zig").Bitmap;
-const Display = @import("display.zig").Display;
+const IO = @import("io.zig").IO;
 
 pub const CPU = struct {
     const Self = @This();
 
     memory: *[]u8,
     bitmap: *Bitmap,
-    display: *Display,
+    io: *IO,
     pc: u16,
     i: u16,
     dtimer: u8,
@@ -19,11 +19,11 @@ pub const CPU = struct {
     paused_x: u8,
     speed: u8,
 
-    pub fn init(memory: *[]u8, bitmap: *Bitmap, display: *Display) Self {
+    pub fn init(memory: *[]u8, bitmap: *Bitmap, io: *IO) Self {
         return .{
             .memory = memory,
             .bitmap = bitmap,
-            .display = display,
+            .io = io,
             .pc = 0x200,
             .i = 0,
             .dtimer = 0,
@@ -41,7 +41,7 @@ pub const CPU = struct {
         if (self.paused) {
             var i: u8 = 0;
             while (i < 16) : (i += 1) {
-                if (self.display.keys[i]) {
+                if (self.io.keys[i]) {
                     self.paused = false;
                     self.v[self.paused_x] = i;
                 }

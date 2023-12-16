@@ -5,7 +5,7 @@ const c = @cImport({
 const Bitmap = @import("bitmap.zig").Bitmap;
 const LAYOUT = @import("layout.zig").KEYS;
 
-pub const Display = struct {
+pub const IO = struct {
     const Self = @This();
     screen: *c.SDL_Window,
     renderer: *c.SDL_Renderer,
@@ -17,7 +17,7 @@ pub const Display = struct {
     keys: [16]bool,
 
     pub fn init() !Self {
-        var this: Self = .{ .screen = undefined, .renderer = undefined, .framebuffer = undefined, .open = true, .keys = std.mem.zeros([16]bool) };
+        var this: Self = .{ .screen = undefined, .renderer = undefined, .framebuffer = undefined, .open = true, .keys = std.mem.zeroes([16]bool) };
 
         // Initialize SDL
         if (c.SDL_Init(c.SDL_INIT_VIDEO | c.SDL_INIT_AUDIO) != 0) {
